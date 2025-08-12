@@ -1,0 +1,23 @@
+# Entornos virtuales
+.venv/
+venv/
+env/
+
+# Archivos de configuración de VS Code
+.vscode/
+
+# Archivos de Python compilados
+__pycache__/
+*.pyc
+*.pyo
+
+# Archivos de dependencias
+*.egg-info/
+dist/
+build/
+
+# Archivos de entorno
+.env
+
+# Archivos de logs
+*.log
