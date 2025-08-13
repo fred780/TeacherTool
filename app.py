@@ -11,7 +11,7 @@ if not os.getenv("GROQ_API_KEY"):
 
 st.set_page_config(page_title="TeacherTool", page_icon=":book:", layout="centered")
 st.title("TeacherTool: Asistente Pedagógico")
-st.caption("Asistente para docentes de preescolar de niveles entre 3-6 años.")
+st.caption("Asistente para docentes de preescolar de niveles entre Materno (4 a 5 años) y Transición (5 a 6 años).")
 
 #Initial state
 if "actividades" not in st.session_state:
@@ -43,7 +43,7 @@ with tab1:
 
     # show formatted result
     if st.session_state.actividades:
-        
+
         if st.session_state.busqueda_creada:
             origen_msg = "generadas"
         elif st.session_state.busqueda_internet:
