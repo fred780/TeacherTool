@@ -18,7 +18,10 @@ if "actividades" not in st.session_state:
     st.session_state["actividades"] = []
 if "ideas_raw" not in st.session_state:
     st.session_state["ideas_raw"] = ""
-
+if "busqueda_internet" not in st.session_state:
+    st.session_state["busqueda_internet"] = False
+if "busqueda_creada" not in st.session_state:
+    st.session_state["busqueda_creada"] = False
 
 graph = build_graph()
 tab1, tab2 = st.tabs(["Idear actividades", "Guía paso a paso"])
@@ -35,25 +38,35 @@ with tab1:
                 result = graph.invoke({"mode": "ideas", "topic": topic, "selection": "", "output": ""})
             st.session_state.actividades = result.get("actividades", [])
             st.session_state.ideas_raw = result.get("output", "")
+            st.session_state.busqueda_internet = result.get("busqueda_internet", False)
+            st.session_state.busqueda_creada = result.get("busqueda_creada", False)
 
-            
     # show formatted result
     if st.session_state.actividades:
-        st.success("Ideas generadas con éxito. Ahora puedes ir a la pestaña 'Guía paso a paso' para seleccionar una actividad.")
+        
+        if st.session_state.busqueda_creada:
+            origen_msg = "generadas"
+        elif st.session_state.busqueda_internet:
+            origen_msg = "encontradas en internet"
+        else:
+            origen_msg = ""
+
+        st.success(f"Ideas {origen_msg} con éxito. Ahora puedes ir a la pestaña 'Guía paso a paso' para seleccionar una actividad.")
         for i, act in enumerate(st.session_state.actividades, start=1):
             with st.expander(f"{i}. {act.get('nombre', '(sin nombre)')}"):
                st.markdown(f"**Habilidad:** {act.get('habilidad', '-')}")
                st.markdown(f"**Duración (min):** {act.get('duracion', '-')}")
                mats = act.get("materiales", [])
                if mats: st.markdown(f"**Materiales:** {', '.join(mats)}")
-               vars = act.get("variables", [])
-               if vars: st.markdown(f"**Variables:**\n- " + "\n- ".join(vars))
+               vars = act.get("variantes", [])
+               if vars: st.markdown(f"**Variantes:**\n- " + "\n- ".join(vars))
                adaps = act.get("adaptaciones", [])
                if adaps: st.markdown(f"**Adaptaciones:**\n- " + "\n- ".join(adaps))
                inds = act.get("indicadores_exito", [])
                if inds: st.markdown(f"**Indicadores:**\n- " + "\n- ".join(inds))
                nota = act.get("nota_seguridad", "")
                if nota: st.markdown(f"**Nota de seguridad:** {nota}")
+
     elif st.session_state.ideas_raw:
         st.warning("No se pudo estructurar la información.")
         st.code(st.session_state.ideas_raw, language="json")
