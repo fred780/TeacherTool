@@ -21,6 +21,8 @@ def _llm():
     return ChatGroq(model="llama-3.1-8b-instant", temperature=0.4)
 
 def razonar(state: AgentState):
+    if state.get("mode") == "instrucciones":
+        return {"output": "instrucciones", "actividades": []}
     llm = _llm()
     prompt = (
         f"Analiza el siguiente tema: '{state['topic']}'. "
@@ -113,6 +115,8 @@ def build_graph():
 
     def route(state: AgentState):
         razonamiento = state.get("output", "")
+        if razonamiento == "instrucciones":
+            return "guiar"
         if razonamiento == "valido":
             return "idear"
         elif razonamiento == "buscar":
